@@ -1,0 +1,47 @@
+name:                havoc
+version:             0.1.0.0
+license:             BSD3
+author:              "Alex Collins"
+maintainer:          "atcollins@pm.me"
+copyright:           "2019 Alex Collins"
+
+extra-source-files:
+- README.md
+
+description:         Please see the README
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+executables:
+  havoc-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - async
+    - havoc
+    - conduit-extra
+    - http-client
+    - http-conduit
+    - http-reverse-proxy
+    - random
+    - wai
+    - warp
+
+tests:
+  havoc-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - havoc

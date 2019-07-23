@@ -1,0 +1,13 @@
+image: haskell:latest
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - stack
+        script:
+          - stack test
+
+definitions:
+  caches:
+    stack: .stack-work 

@@ -15,6 +15,15 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+    - async
+    - conduit-extra
+    - http-client
+    - http-conduit
+    - http-reverse-proxy
+    - random
+    - wai
+    - warp
 
 executables:
   havoc-exe:
@@ -25,15 +34,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - async
     - havoc
-    - conduit-extra
-    - http-client
-    - http-conduit
-    - http-reverse-proxy
-    - random
-    - wai
-    - warp
 
 tests:
   havoc-test:

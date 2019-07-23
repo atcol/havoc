@@ -1,6 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
-import Lib
+import           Network.Havoc (mkProxies)
 
 main :: IO ()
-main = someFunc
+main = head $ mkProxies [("https://google.com/", 80, 8080)]

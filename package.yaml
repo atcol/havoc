@@ -17,6 +17,8 @@ library:
   source-dirs: src
   dependencies:
     - async
+    - base >=4.7 && <5
+    - bytestring
     - conduit-extra
     - http-client
     - http-conduit
@@ -26,7 +28,7 @@ library:
     - warp
 
 executables:
-  havoc-exe:
+  havoc:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -34,7 +36,13 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
+    - aeson
     - havoc
+    - bytestring
+    - raw-strings-qq
+    - text
+    - havoc
+    - yaml
 
 tests:
   havoc-test:

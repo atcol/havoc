@@ -6,27 +6,25 @@ module Network.Havoc (
   , mkProxies
 ) where
 
-import           Control.Concurrent.MVar      (MVar (..), newMVar, putMVar,
-                                               takeMVar)
-import           Control.Monad                (liftM)
-import           Control.Monad.IO.Class       (MonadIO (..), liftIO)
-import           Control.Monad.State.Strict   (StateT (..), get, modify,
-                                               runStateT)
-import           Control.Monad.STM            (STM (..))
-import           Control.Monad.Trans.Resource (ResourceT (..))
-import qualified Data.ByteString.Char8        as BS
-import           Data.CaseInsensitive         (CI (..))
-import           Data.Char                    (toLower)
+import           Control.Concurrent.MVar    (MVar (..), newMVar, putMVar,
+                                             takeMVar)
+import           Control.Monad              (liftM)
+import           Control.Monad.IO.Class     (MonadIO (..), liftIO)
+import           Control.Monad.State.Strict (StateT (..), get, modify,
+                                             runStateT)
+import           Control.Monad.STM          (STM (..))
+import qualified Data.ByteString.Char8      as BS
+import           Data.CaseInsensitive       (CI (..))
+import           Data.Char                  (toLower)
 import           Data.Conduit.Network
-import           Data.HashMap.Strict
-import           Data.Maybe                   (fromMaybe, maybe)
-import           Debug.Trace                  (trace)
+import           Data.Maybe                 (fromMaybe, maybe)
+import           Debug.Trace                (trace)
 import           Network.Havoc.Types
-import qualified Network.HTTP.Client          as C
+import qualified Network.HTTP.Client        as C
 import           Network.HTTP.ReverseProxy
-import qualified Network.HTTP.Types           as H
-import qualified Network.Wai                  as W
-import           Network.Wai.Handler.Warp     (run)
+import qualified Network.HTTP.Types         as H
+import qualified Network.Wai                as W
+import           Network.Wai.Handler.Warp   (run)
 
 type URL = BS.ByteString
 

@@ -27,9 +27,7 @@ library:
     - http-types
     - mtl
     - random
-    - resourcet
     - stm
-    - unordered-containers
     - wai
     - warp
 

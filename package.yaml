@@ -25,7 +25,11 @@ library:
     - http-conduit
     - http-reverse-proxy
     - http-types
+    - mtl
     - random
+    - resourcet
+    - stm
+    - unordered-containers
     - wai
     - warp
 

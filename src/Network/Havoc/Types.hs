@@ -22,6 +22,9 @@ data Proxy = Proxy {
 data Strategy = ReqLimit Int | DropRatio Float
   deriving (Show, Eq, Generic)
 
+-- | The result of running a strategy
+data Decision = Pass | Reject deriving (Eq, Show)
+
 instance FromJSON Proxy where
 
 instance FromJSON Strategy where

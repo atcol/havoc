@@ -1,13 +1,24 @@
 image: haskell:latest
 
+options:
+  size: 2x
+
 pipelines:
   default:
     - step:
+        deployment: bitbucket
         caches:
           - stack
+          - stack-home
         script:
-          - stack test
+          - stack install
+          - pipe: atlassian/bitbucket-upload-file:0.1.1
+            variables:
+              BITBUCKET_USERNAME: '$BITBUCKET_DEPLOY_USERNAME'
+              BITBUCKET_APP_PASSWORD: '$BITBUCKET_DEPLOY_PASS'
+              FILENAME: 'havoc'
 
 definitions:
   caches:
     stack: .stack-work 
+    stack-home: $HOME/.stack

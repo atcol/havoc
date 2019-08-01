@@ -16,13 +16,15 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
-    - async
+    - aeson
     - base >=4.7 && <5
     - bytestring
+    - case-insensitive
     - conduit-extra
     - http-client
     - http-conduit
     - http-reverse-proxy
+    - http-types
     - random
     - wai
     - warp
@@ -37,12 +39,12 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - aeson
+    - async
     - havoc
     - bytestring
     - raw-strings-qq
     - text
     - havoc
-    - yaml
 
 tests:
   havoc-test:

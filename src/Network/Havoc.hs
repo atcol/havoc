@@ -6,8 +6,8 @@ module Network.Havoc (
   , mkProxies
 ) where
 
-import           Control.Concurrent.MVar    (MVar (..), newMVar, putMVar,
-                                             takeMVar)
+import           Control.Concurrent.STM     (STM, TMVar (..), atomically,
+                                             newTMVarIO, putTMVar, takeTMVar)
 import           Control.Monad              (liftM)
 import           Control.Monad.IO.Class     (MonadIO (..), liftIO)
 import           Control.Monad.State.Strict (StateT (..), get, modify,
@@ -16,7 +16,6 @@ import           Control.Monad.STM          (STM (..))
 import qualified Data.ByteString.Char8      as BS
 import           Data.CaseInsensitive       (CI (..))
 import           Data.Char                  (toLower)
-import           Data.Conduit.Network
 import           Data.Maybe                 (fromMaybe, maybe)
 import           Debug.Trace                (trace)
 import           Network.Havoc.Types
@@ -41,16 +40,18 @@ mkProxies (x:xs) = mkProxy x : mkProxies xs
 mkProxy :: MonadIO m => Proxy -> m ()
 mkProxy x = do
   mgr <- liftIO $ C.newManager C.defaultManagerSettings
-  session <- liftIO $ newMVar (Session 0)
+  session <- liftIO $ newTMVarIO (Session 0)
   liftIO $ run mgPort $ waiProxyTo (handler session x) defaultOnExc mgr
   where mgPort = fromMaybe 8080 (port x)
 
 -- | Rewrite the request according to the proxy settings
-handler :: MVar Session -> Proxy -> (W.Request -> IO WaiProxyResponse)
-handler s (Proxy _ u _ _) r = do
-  ses <- liftIO $ takeMVar s
-  (resp, newSes) <- runStateT (decide r) ses
-  liftIO $ putMVar s newSes
+handler :: TMVar Session -> Proxy -> (W.Request -> IO WaiProxyResponse)
+handler s (Proxy _ u strat _) r = do
+  resp <- atomically $ (do
+          ses <- takeTMVar s
+          (resp, newSes) <- runStateT (decide r) ses
+          putTMVar s newSes
+          return resp)
   case resp of
     Pass   -> return $ redirect isSecure
     Reject -> error "Rejected"
@@ -66,7 +67,7 @@ handler s (Proxy _ u _ _) r = do
           redirect False = WPRModifiedRequest r' (ProxyDest host port)
           redirect True  = WPRModifiedRequestSecure r' (ProxyDest host port)
 
-decide :: W.Request -> StateT Session (IO) Decision
+decide :: W.Request -> StateT Session STM Decision
 decide r = do
   modify (\s -> Session ((sReqCount s) + 1))
   latest <- get

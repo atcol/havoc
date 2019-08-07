@@ -3,7 +3,7 @@
 
 module Network.Havoc.Types where
 
-import           Data.Aeson
+import           Data.Aeson      (FromJSON, parseJSON, withObject, (.:))
 import qualified Data.ByteString as BS
 import           Data.Foldable   (asum)
 import           GHC.Generics

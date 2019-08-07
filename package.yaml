@@ -55,4 +55,10 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
+    - async
     - havoc
+    - hspec
+    - hspec-discover
+    - hspec-wai
+    - http-client
+    - http-types

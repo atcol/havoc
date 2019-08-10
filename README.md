@@ -7,11 +7,11 @@ remote service failure.
 
 ## Strategies
 
-| Strategy | Example | Effect|
-|---|---|---|
-| Transparent | _n/a_ | Accept all requests |
-| ReqLimit    | `ReqLimit 1000`  | Accept 1000 requests, then always fail |
-| DropRatio   | `DropRatio 0.05 `| Fail 5% of requests |
+| Strategy | Parameter | Example | Effect|
+|---|---|---|---|
+| Transparent | _n/a_   | _n/a_ | Accept all requests |
+| ReqLimit    | `Int`   | `ReqLimit 1000`  | Accept 1000 requests, then always fail |
+| DropRatio   | `Float` | `DropRatio 0.05 `| Fail 5% of requests |
 
 ## Examples
 

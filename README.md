@@ -41,3 +41,7 @@ With this settings JSON file:
   * a proxy on port `2222` that is transparent
   
   * a proxy on port `3333` that will accept the first 100 requests the fail
+  
+To run:
+
+    $ ./havoc farm --file settings.json

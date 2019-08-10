@@ -34,7 +34,12 @@ executables:
   havoc:
     main:                Main.hs
     source-dirs:         app
+    cc-options: -static
+    ld-options: -static -pthread
     ghc-options:
+    - -Wall
+    - -O2
+    - -static
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N

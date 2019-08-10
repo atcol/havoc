@@ -35,6 +35,9 @@ With this settings JSON file:
       { "iden": "Support", "url": "http://support.system/", "port": 3333, "strategy": { "limit": 100 } }
     ]
  we have:
+ 
   * a proxy on port `1111` that drops 5% of its requests
+  
   * a proxy on port `2222` that is transparent
+  
   * a proxy on port `3333` that will accept the first 100 requests the fail

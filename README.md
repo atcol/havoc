@@ -19,7 +19,7 @@ remote service failure.
 
 Scenario: drop 50% of requests from my Single Page App (SPA) to my REST API
 
-    $ ./havoc solo --url "http://" --strat "DropRatio 0.5" --port 8080
+    $ ./havoc solo --url "http://myservice" --strat "DropRatio 0.5" --port 8080
 
 Pointing the SPA to `localhost:8080` will fail 50 % of its requests.
 
@@ -31,7 +31,7 @@ With this settings JSON file:
 
     [
       { "iden": "User", "url": "http://users.system/", "port": 1111, "strategy": { "ratio":  0.05 } },
-      { "iden": "Router-Drop", "url": "http://sales.system/", "port": 2222, "strategy": {} },
+      { "iden": "Sales", "url": "http://sales.system/", "port": 2222, "strategy": {} },
       { "iden": "Support", "url": "http://support.system/", "port": 3333, "strategy": { "limit": 100 } }
     ]
  we have:
@@ -45,6 +45,18 @@ With this settings JSON file:
 To run:
 
     $ ./havoc farm --file settings.json
+
+## Docker Support
+
+There's a docker image at `athc/havoc`. 
+
+You could run the `solo` example above with:
+
+    $ docker run -it --expose 8080:8080 athc/havoc solo --url "http://myservice" --strat "DropRatio 0.5" --port 8080
+
+You could run the `farm` example above with:
+
+    $ docker run -v ${PWD}:/havoc-work  --expose=1111-3333:1111-3333 -it havoc farm  --file /havoc-work/settings.json  
 
 ## Development
 

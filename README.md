@@ -2,7 +2,7 @@
 
 A highly configurable, low footprint reverse proxy for simulating failure between remote systems.
 
-Havoc exposes _strategies_ that allow you to quickly &amp; easily test your applications against
+Havoc exposes _strategies_ that allow you to quickly & easily test your applications against
 remote service failure.
 
 ## Strategies
@@ -23,7 +23,7 @@ Scenario: drop 50% of requests from my Single Page App (SPA) to my REST API
 
 Pointing the SPA to `localhost:8080` will fail 50 % of its requests.
 
-### Multiple Services &amp; Strategies
+### Multiple Services & Strategies
 
 Scenario: wrap multiple microservices with different failure strategies
 

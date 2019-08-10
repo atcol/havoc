@@ -52,7 +52,7 @@ There's a docker image at `athc/havoc`.
 
 You could run the `solo` example above with:
 
-    $ docker run -it --expose 8080:8080 athc/havoc solo --url "http://myservice" --strat "DropRatio 0.5" --port 8080
+    $ docker run -it -p 8080:8080 athc/havoc solo --url "http://myservice" --strat "DropRatio 0.5" --port 8080
 
 You could run the `farm` example above with:
 

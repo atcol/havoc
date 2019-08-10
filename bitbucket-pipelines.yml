@@ -11,7 +11,7 @@ pipelines:
           - stack
           - stack-home
         script:
-          - stack install
+          - stack install --test
           - pipe: atlassian/bitbucket-upload-file:0.1.1
             variables:
               BITBUCKET_USERNAME: '$BITBUCKET_DEPLOY_USERNAME'

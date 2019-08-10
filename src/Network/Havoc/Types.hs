@@ -19,7 +19,7 @@ data Proxy = Proxy {
   , port     :: Maybe Int
   } deriving (Show, Eq, Generic)
 
-data Strategy = ReqLimit Int | DropRatio Float
+data Strategy = Transparent | ReqLimit { reqLimit :: Int } | DropRatio { dropRatio :: Float }
   deriving (Show, Eq, Generic)
 
 -- | The result of running a strategy
@@ -29,6 +29,6 @@ instance FromJSON Proxy where
 
 instance FromJSON Strategy where
   parseJSON = withObject "Strategy" $ \v -> asum [
-    DropRatio <$> v .: "ratio",
-    ReqLimit <$> v .: "limit"
+      DropRatio <$> v .: "ratio"
+    , ReqLimit <$> v .: "limit"
     ]

@@ -24,7 +24,7 @@ library:
     - http-reverse-proxy
     - http-types
     - mtl
-    - mwc-random
+    - random
     - stm
     - wai
     - warp
@@ -56,9 +56,12 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - async
+    - bytestring
     - havoc
     - hspec
     - hspec-discover
     - hspec-wai
     - http-client
     - http-types
+    - wai
+    - warp

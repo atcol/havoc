@@ -23,6 +23,7 @@ library:
     - http-client
     - http-reverse-proxy
     - http-types
+    - optparse-generic
     - mtl
     - random
     - stm
@@ -40,8 +41,9 @@ executables:
     dependencies:
     - aeson
     - async
-    - havoc
     - bytestring
+    - optparse-generic
+    - havoc
     - raw-strings-qq
     - text
     - havoc

@@ -8,6 +8,7 @@ import qualified Data.ByteString as BS
 import           Data.Foldable   (asum)
 import           GHC.Generics
 
+-- | The settings for a proxy
 data Proxy = Proxy {
   -- | The identifier for this proxy
   iden       :: String
@@ -19,8 +20,9 @@ data Proxy = Proxy {
   , port     :: Maybe Int
   } deriving (Show, Eq, Generic)
 
-data Strategy = Transparent | ReqLimit { reqLimit :: Int } | DropRatio { dropRatio :: Float }
-  deriving (Show, Eq, Generic)
+-- | The behaviour for a proxy
+data Strategy = Transparent | ReqLimit Int | DropRatio Float
+  deriving (Eq, Generic, Read, Show)
 
 -- | The result of running a strategy
 data Decision = Pass | Reject deriving (Eq, Show)
@@ -31,4 +33,5 @@ instance FromJSON Strategy where
   parseJSON = withObject "Strategy" $ \v -> asum [
       DropRatio <$> v .: "ratio"
     , ReqLimit <$> v .: "limit"
+    , return Transparent 
     ]

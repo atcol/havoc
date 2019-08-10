@@ -1,21 +1,52 @@
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes       #-}
+{-# LANGUAGE TypeOperators     #-}
 
 module Main where
 
 import           Control.Concurrent.Async
+import Data.Maybe (fromMaybe)
 import           Data.Aeson               (eitherDecodeFileStrict)
-import qualified Data.ByteString          as BS
+import qualified Data.ByteString.Char8    as BS
 import           Network.Havoc
+import           Options.Generic
 import           System.Environment       (getArgs)
+import Control.Exception (try)
+
+-- | The program's settings/configuration
+data Profile
+  = Solo
+      { url   :: String
+      , strat :: Strategy
+      , port  :: Int
+      }
+  | Farm
+      { file :: FilePath
+      }
+  deriving (Generic, Show)
+  
+instance ParseRecord Strategy
+
+instance ParseField Strategy
+instance ParseFields Strategy
+  
+instance ParseRecord Proxy
+
+instance ParseRecord Profile
 
 main :: IO ()
 main = do
-  c <- eitherDecodeFileStrict "settings.json" :: IO (Either String [Proxy])
-  case c of
-    Left e   -> print $ "No proxy settings parsed: " ++ e
-    Right c' -> do
-      summarise c'
-      mapConcurrently_ Prelude.id $ mkProxies c'
+  pr <- getRecord "Havoc" :: IO Profile
+  proxies <- loadProxies pr
+  mapConcurrently_ Prelude.id $ mkProxies proxies
 
-summarise c = print c
+loadProxies (Solo u str p) = return [Proxy "Shell" u str (Just p)]
+loadProxies (Farm f) = do
+  c <- eitherDecodeFileStrict f :: IO (Either String [Proxy])
+  case c of
+    Left e -> error $ "No proxy settings parsed: " ++ e
+    Right c' -> return c'
+
+parseStrategy :: String -> Strategy
+parseStrategy = read

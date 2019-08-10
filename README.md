@@ -45,3 +45,15 @@ With this settings JSON file:
 To run:
 
     $ ./havoc farm --file settings.json
+
+## Development
+
+If you wish to contribute please submit a merge request.
+
+### Future Plans
+
+ * HTTPS support
+ 
+ * request & response mutators
+ 
+ * TCP/UDP socket support (e.g. proxy a message broker)

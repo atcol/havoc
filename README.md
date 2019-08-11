@@ -1,17 +1,16 @@
 # havoc
 
-A highly configurable, low footprint reverse proxy for simulating failure between remote systems.
+A high performance, low footprint reverse proxy for simulating remote system failure.
 
-Havoc exposes _strategies_ that allow you to quickly & easily test your applications against
-remote service failure.
+Havoc exposes _strategies_ that allow you to quickly & easily test your distributed systems with unreliable .
 
 ## Strategies
 
-| Strategy | Parameter | Example | Effect|
+| Strategy | Parameter | JSON Example | Effect|
 |---|---|---|---|
-| Transparent | _n/a_   | _n/a_ | Accept all requests |
-| ReqLimit    | `Int`   | `ReqLimit 1000`  | Accept 1000 requests, then always fail |
-| DropRatio   | `Float` | `DropRatio 0.05 `| Fail 5% of requests |
+| Transparent | _n/a_   | `"strategy": { }` | Accept all requests |
+| ReqLimit    | `Int`   | `"strategy": { "limit": 1000 }`  | Accept 1000 requests, then always fail |
+| DropRatio   | `Float` | `"strategy": { "ratio": 0.05 }`  | Fail 5% of requests |
 
 ## Examples
 

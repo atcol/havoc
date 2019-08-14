@@ -12,11 +12,16 @@ pipelines:
           - stack-home
         script:
           - stack install --test
+          - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+          - docker build -t athc/havoc:latest .
+          - docker push  athc/havoc:latest
           - pipe: atlassian/bitbucket-upload-file:0.1.1
             variables:
               BITBUCKET_USERNAME: '$BITBUCKET_DEPLOY_USERNAME'
               BITBUCKET_APP_PASSWORD: '$BITBUCKET_DEPLOY_PASS'
               FILENAME: 'havoc'
+        services:
+          - docker
 
 definitions:
   caches:

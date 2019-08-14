@@ -27,12 +27,9 @@ data Profile
   deriving (Generic, Show)
   
 instance ParseRecord Strategy
-
 instance ParseField Strategy
 instance ParseFields Strategy
-  
 instance ParseRecord Proxy
-
 instance ParseRecord Profile
 
 main :: IO ()
@@ -41,6 +38,8 @@ main = do
   proxies <- loadProxies pr
   mapConcurrently_ Prelude.id $ mkProxies proxies
 
+-- | Create our proxy instances from the specified profile
+loadProxies :: Profile -> IO [Proxy]
 loadProxies (Solo u str p) = return [Proxy "Shell" u str (Just p)]
 loadProxies (Farm f) = do
   c <- eitherDecodeFileStrict f :: IO (Either String [Proxy])
@@ -48,5 +47,6 @@ loadProxies (Farm f) = do
     Left e -> error $ "No proxy settings parsed: " ++ e
     Right c' -> return c'
 
+-- | Load the given strategy from a raw String
 parseStrategy :: String -> Strategy
 parseStrategy = read

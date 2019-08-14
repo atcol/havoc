@@ -20,6 +20,7 @@ import           Network.Wai               (Application, responseLBS)
 import           Network.Wai.Handler.Warp  (run)
 import           Test.Hspec
 import           Test.Hspec.Wai
+import Data.Time.Clock (getCurrentTime, diffUTCTime)
 
 -- | The number of tests we run per proxy
 testLimit :: Int
@@ -30,6 +31,8 @@ proxyTransparent = Proxy "Local" "http://localhost:8080/" Transparent (Just 1111
 proxyReqLimit = Proxy "Local" "http://localhost:8080/" (ReqLimit 5) (Just 2222)
 
 proxyDropRatio = Proxy "Local" "http://localhost:8080/" (DropRatio 0.6) (Just 3333)
+
+proxyDelay = Proxy "Local" "http://localhost:8080/" (Delay 1000) (Just 3333)
 
 -- | The Warp application for testing proxies against
 warp :: IO ()
@@ -83,9 +86,25 @@ spec = do
              let sucCount = countMatching 200 statusCodes
              sucCount `shouldSatisfy` (<=) 4
              countMatching 500 statusCodes `shouldBe` 10 - sucCount)
+      it "supports Delay" $
+        withAsync
+          (mkProxy proxyDelay)
+          (\r' -> do
+             threadDelay 1000000
+             startTime <- getCurrentTime
+             statusCodes <-
+               mapM
+                 (\n -> do
+                    r <- req "http://localhost:3333/"
+                    return $ statusCode $ responseStatus r)
+                 [1 .. testLimit]
+             endTime <- getCurrentTime
+             countMatching 200 statusCodes `shouldSatisfy` (==) testLimit
+             diffUTCTime endTime startTime / realToFrac testLimit `shouldSatisfy` (<=) 1) -- Seconds
 
 countMatching s = length . filter (s ==)
 
+-- | Perform the request
 req :: String -> IO (Response BS.ByteString)
 req url = do
   manager <- newManager defaultManagerSettings

@@ -1,37 +1,51 @@
-{-# LANGUAGE DeriveGeneric     #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric         #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
 
 module Network.Havoc.Types where
 
-import           Data.Aeson      (FromJSON, parseJSON, withObject, (.:))
-import qualified Data.ByteString as BS
-import           Data.Foldable   (asum)
+import           Data.Aeson    (FromJSON, parseJSON, withObject, (.:))
+import           Data.Foldable (asum)
 import           GHC.Generics
 
 -- | The settings for a proxy
-data Proxy = Proxy {
+data Proxy =
+  Proxy
   -- | The identifier for this proxy
-  iden       :: String
+    { iden     :: String
   -- | The URL we're reverse proxying
-  , url      :: String
+    , url      :: String
   -- | The behaviour
-  , strategy ::  Strategy
+    , strategy :: Strategy
   -- | Optional port to listen on
-  , port     :: Maybe Int
-  } deriving (Show, Eq, Generic)
+    , port     :: Maybe Int
+    }
+  deriving (Show, Eq, Generic)
 
 -- | The behaviour for a proxy
-data Strategy = Transparent | ReqLimit Int | DropRatio Float
+data Strategy
+  -- | Let all requests pass through
+  = Transparent
+  -- | The number of requests to accept before failing all of them
+  | ReqLimit Int
+  -- | The percentage of requests to drop/fail
+  | DropRatio Float
+  -- | Pause request processing for the specified milliseconds
+  | Delay Int
   deriving (Eq, Generic, Read, Show)
 
 -- | The result of running a strategy
-data Decision = Pass | Reject deriving (Eq, Show)
+data Decision
+  = Pass
+  | Reject
+  deriving (Eq, Show)
 
-instance FromJSON Proxy where
+instance FromJSON Proxy
 
 instance FromJSON Strategy where
-  parseJSON = withObject "Strategy" $ \v -> asum [
-      DropRatio <$> v .: "ratio"
-    , ReqLimit <$> v .: "limit"
-    , return Transparent 
-    ]
+  parseJSON =
+    withObject "Strategy" $ \v -> asum [
+      DropRatio <$> v .: "drop"
+      , ReqLimit <$> v .: "limit"
+      , Delay <$> v .: "delay"
+      , return Transparent]

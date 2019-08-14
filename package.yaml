@@ -15,6 +15,8 @@ dependencies:
 
 library:
   source-dirs: src
+  ghc-options:
+    - -Wall
   dependencies:
     - aeson
     - base >=4.7 && <5
@@ -27,6 +29,7 @@ library:
     - mtl
     - random
     - stm
+    - time
     - wai
     - warp
 
@@ -70,5 +73,6 @@ tests:
     - hspec-wai
     - http-client
     - http-types
+    - time
     - wai
     - warp

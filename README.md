@@ -7,12 +7,12 @@ remote service failure.
 
 ## Strategies
 
-| Strategy | Parameter  | JSON Example | Command Line Example | Effect|
+| Strategy | Parameter  | JSON Example | Command Line Example | Effect 
 |---|---|---|---|---|
-| Transparent | _n/a_   | "strategy": { } | _n/a_ | Accept all requests |
-| ReqLimit    | `Int`   | "strategy": { "limit": 1000 } | `ReqLimit 1000`  | Accept 1000 requests, then always fail |
-| DropRatio   | `Float` | "strategy": { "drop":  0.05 } | `DropRatio 0.05 `| Fail 5% of requests |
-| Delay       | `Int`   | "strategy": { "delay": 1000 } | `Delay 1000 `| Fail 5% of requests |
+| Transparent | _n/a_   | `"strategy": { }`               | _n/a_ | Accept all requests |
+| ReqLimit    | `Int`   | `"strategy": { "limit": 1000 }` | `ReqLimit 1000`  | Accept 1000 requests, then always fail |
+| DropRatio   | `Float` | `"strategy": { "drop":  0.05 }` | `DropRatio 0.05 `| Fail 5% of requests |
+| Delay       | `Int`   | `"strategy": { "delay": 1000 }` | `Delay 1000 `| Wait 1 second before performing the request |
 
 ## Examples
 

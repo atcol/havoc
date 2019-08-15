@@ -26,13 +26,13 @@ import Data.Time.Clock (getCurrentTime, diffUTCTime)
 testLimit :: Int
 testLimit = 10
 
-proxyTransparent = Proxy "Local" "http://localhost:8080/" Transparent (Just 1111)
+proxyTransparent = (Proxy "Local" "http://localhost:8080/" Transparent (Just 1111), Nothing)
 
-proxyReqLimit = Proxy "Local" "http://localhost:8080/" (ReqLimit 5) (Just 2222)
+proxyReqLimit    = (Proxy "Local" "http://localhost:8080/" (ReqLimit 5) (Just 2222), Nothing)
 
-proxyDropRatio = Proxy "Local" "http://localhost:8080/" (DropRatio 0.6) (Just 3333)
+proxyDropRatio   = (Proxy "Local" "http://localhost:8080/" (DropRatio 0.6) (Just 3333), Nothing)
 
-proxyDelay = Proxy "Local" "http://localhost:8080/" (Delay 1000) (Just 3333)
+proxyDelay       = (Proxy "Local" "http://localhost:8080/" (Delay 1000) (Just 3333), Nothing)
 
 -- | The Warp application for testing proxies against
 warp :: IO ()

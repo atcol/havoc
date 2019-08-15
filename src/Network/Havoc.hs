@@ -2,8 +2,9 @@
 {-# LANGUAGE OverloadedStrings     #-}
 
 module Network.Havoc
-  ( Proxy(..)
-  , Decision(..)
+  ( Decision(..)
+  , Listener
+  , Proxy(..)
   , Strategy(..)
   , mkProxies
   , mkProxy
@@ -19,37 +20,27 @@ import           Data.CaseInsensitive       (CI (..))
 import           Data.Maybe                 (fromMaybe)
 import           Network.Havoc.Types
 import qualified Network.HTTP.Client        as C
-import           Network.HTTP.ReverseProxy
+import qualified Network.HTTP.ReverseProxy  as RP
 import qualified Network.Wai                as W
 import           Network.Wai.Handler.Warp   (run)
 import           System.Random              (newStdGen, randomRs)
 import Control.Concurrent (threadDelay)
 
--- | A proxy's state across requests
-data Session =
-  Session
-    -- | The session's request count
-    { sReqCount :: Int
-    -- | The previous request & decision
-    , sPrev     :: Maybe (W.Request, Decision)
-    }
-  deriving (Show)
-
 -- | Construct the proxies from the given list
-mkProxies :: [Proxy] -> [IO ()]
+mkProxies :: MonadIO m => [(Proxy, Maybe (Listener m))] -> [m ()]
 mkProxies = map mkProxy
 
 -- | Create a proxy
-mkProxy :: MonadIO m => Proxy -> m ()
-mkProxy x = do
+mkProxy :: MonadIO m => (Proxy, Maybe (Listener m)) -> m ()
+mkProxy (x,_) = do
   mgr <- liftIO $ C.newManager C.defaultManagerSettings
   session <- liftIO $ newTMVarIO (Session 0 Nothing)
-  liftIO $ run mgPort $ waiProxyTo (handler session x) defaultOnExc mgr
+  liftIO $ run mgPort $ RP.waiProxyTo (handler session x) RP.defaultOnExc mgr
   where
     mgPort = fromMaybe 8080 (port x)
 
 -- | Rewrite the request according to the proxy settings
-handler :: TMVar Session -> Proxy -> (W.Request -> IO WaiProxyResponse)
+handler :: TMVar Session -> Proxy -> (W.Request -> IO RP.WaiProxyResponse)
 handler s p@(Proxy _ u _ _) r = do
   g <- newStdGen
   _ <- prep p
@@ -66,12 +57,12 @@ handler s p@(Proxy _ u _ _) r = do
     prReq = C.parseRequest_ u
     host = C.host prReq
     reqPort = C.port prReq
-    newHdrs = ("Host", hostHdr) : dropWhile ((==) ("host" :: CI BS.ByteString) . fst) (W.requestHeaders r)
     hostHdr = BS.concat [host, ":", BS.pack $ show reqPort]
+    newHdrs = ("Host", hostHdr) : dropWhile ((==) ("host" :: CI BS.ByteString) . fst) (W.requestHeaders r)
     isSecure = C.secure prReq
     r' = r {W.requestHeaderHost = Just hostHdr, W.requestHeaders = newHdrs}
-    redirect False = WPRModifiedRequest r' (ProxyDest host reqPort)
-    redirect True = WPRModifiedRequestSecure r' (ProxyDest host reqPort)
+    redirect False = RP.WPRModifiedRequest r' (RP.ProxyDest host reqPort)
+    redirect True = RP.WPRModifiedRequestSecure r' (RP.ProxyDest host reqPort)
 
 -- | The decision mapper
 decide :: Proxy -> [Float] -> W.Request -> StateT Session STM Decision

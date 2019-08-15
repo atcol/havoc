@@ -4,9 +4,25 @@
 
 module Network.Havoc.Types where
 
-import           Data.Aeson    (FromJSON, parseJSON, withObject, (.:))
-import           Data.Foldable (asum)
+import           Data.Aeson                (FromJSON, parseJSON, withObject,
+                                            (.:))
+import           Data.Foldable             (asum)
 import           GHC.Generics
+import qualified Network.HTTP.ReverseProxy as RP
+import qualified Network.Wai               as W
+
+-- | A sink for proxy request & response cycles
+type Listener m = (Session, W.Request, RP.WaiProxyResponse) -> m ()
+
+-- | A proxy's state across requests
+data Session =
+  Session
+    -- | The session's request count
+    { sReqCount :: Int
+    -- | The previous request & decision
+    , sPrev     :: Maybe (W.Request, Decision)
+    }
+  deriving (Show)
 
 -- | The settings for a proxy
 data Proxy =
@@ -44,8 +60,5 @@ instance FromJSON Proxy
 
 instance FromJSON Strategy where
   parseJSON =
-    withObject "Strategy" $ \v -> asum [
-      DropRatio <$> v .: "drop"
-      , ReqLimit <$> v .: "limit"
-      , Delay <$> v .: "delay"
-      , return Transparent]
+    withObject "Strategy" $ \v ->
+      asum [DropRatio <$> v .: "drop", ReqLimit <$> v .: "limit", Delay <$> v .: "delay", return Transparent]

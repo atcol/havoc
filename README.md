@@ -1,3 +1,5 @@
+![Havoc](assets/logo.png)
+
 # havoc
 
 A highly configurable, low footprint reverse proxy for simulating failure between remote systems.

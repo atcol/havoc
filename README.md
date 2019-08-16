@@ -1,4 +1,4 @@
-![Havoc](assets/logo.png)
+![Havoc](assets/logo-small.png)
 
 # havoc
 

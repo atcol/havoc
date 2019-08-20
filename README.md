@@ -7,6 +7,8 @@ A highly configurable, low footprint reverse proxy for simulating failure betwee
 Havoc exposes _strategies_ that allow you to quickly & easily test your applications against
 remote service failure.
 
+# Quick Start
+
 ## Strategies
 
 | Strategy | Parameter  | JSON Example | Command Line Example | Effect 
@@ -35,16 +37,18 @@ With this settings JSON file:
     [
       { "iden": "User", "url": "http://users.system/", "port": 1111, "strategy": { "drop":  0.05 } },
       { "iden": "Sales", "url": "http://sales.system/", "port": 2222, "strategy": {} },
-      { "iden": "Marketing", "url": "http://sales.system/", "port": 2222, "strategy": { "delay": 1000 } },
-      { "iden": "Support", "url": "http://support.system/", "port": 3333, "strategy": { "limit": 100 } }
+      { "iden": "Marketing", "url": "http://marketing.system/", "port": 3333, "strategy": { "delay": 1000 } },
+      { "iden": "Support", "url": "http://support.system/", "port": 4444, "strategy": { "limit": 100 } }
     ]
  we have:
  
-  * a proxy on port `1111` that drops 5% of its requests
+  * a proxy for the User service on port `1111` that drops 5% of its requests
   
-  * a proxy on port `2222` that is transparent
+  * a proxy for the Sales service on port `2222` that is transparent
   
-  * a proxy on port `3333` that will accept the first 100 requests the fail
+  * a proxy for the Marketing service on port `3333` that delays requests by 1 second
+  
+  * a proxy for the Support XX service on port `4444` that will accept the first 100 requests the fail
   
 To run:
 
@@ -60,13 +64,13 @@ You could run the `solo` example above with:
 
 You could run the `farm` example above with:
 
-    $ docker run -v ${PWD}:/havoc-work  --expose=1111-3333:1111-3333 -it havoc farm  --file /havoc-work/settings.json  
+    $ docker run -v ${PWD}:/havoc-work  --expose=1111-4444:1111-4444 -it havoc farm  --file /havoc-work/settings.json  
 
-## Development
+# Development
 
 If you wish to contribute please submit a merge request.
 
-### Future Plans
+## Future Plans
 
  * HTTPS support
  

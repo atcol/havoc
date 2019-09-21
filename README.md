@@ -70,7 +70,15 @@ You could run the `farm` example above with:
 
 # Development
 
-If you wish to contribute please submit a merge request.
+To build the project, just clone it then build with Stack:
+
+    $ stack install
+    
+When the command completes you'll have a `havoc` binary in the current working directory.
+
+## Contributions
+
+Contributions are welcome. Please submit a merge request.
 
 ## Future Plans
 

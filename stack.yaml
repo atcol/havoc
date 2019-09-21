@@ -1,4 +1,4 @@
+local-bin-path: .
 packages:
 - .
-resolver: nightly-2019-07-23
-local-bin-path: '.'
+resolver: nightly-2019-09-21

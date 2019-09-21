@@ -16,9 +16,11 @@ type Listener m = (Session, W.Request, RP.WaiProxyResponse) -> m ()
 
 -- | A proxy's state across requests
 data Session =
-  Session
+  Session {
+    -- | A unique identifier for this session
+    sId :: String
     -- | The session's request count
-    { sReqCount :: Int
+    , sReqCount :: Int
     -- | The previous request & decision
     , sPrev     :: Maybe (W.Request, Decision)
     }
@@ -28,13 +30,13 @@ data Session =
 data Proxy =
   Proxy
   -- | The identifier for this proxy
-    { iden     :: String
+    { prId     :: String
   -- | The URL we're reverse proxying
-    , url      :: String
+    , prUrl      :: String
   -- | The behaviour
-    , strategy :: Strategy
+    , prStrat :: Strategy
   -- | Optional port to listen on
-    , port     :: Maybe Int
+    , prPort     :: Maybe Int
     }
   deriving (Show, Eq, Generic)
 

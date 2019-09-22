@@ -2,3 +2,4 @@
 .stack-work/
 havoc.cabal
 *~
+/out/

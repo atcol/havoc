@@ -46,6 +46,8 @@ app req f = f $ responseLBS status200 [(hContentType, "text/plain")] "Hello worl
 spec :: Spec
 spec = do
   let server = async warp >> print "Warp Completed"
+  -- | Sometimes tests fail perhaps because the server isn't yet running
+  runIO $ threadDelay 2000000
   with server $
     describe "Havoc" $ do
       it "supports Transparent" $
